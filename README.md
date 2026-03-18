@@ -1,45 +1,43 @@
-# NETLIGHTSHIPPING
+# Array Flatten
 
-Simple, functional shipping tracking website.
+[![NPM version][npm-image]][npm-url]
+[![NPM downloads][downloads-image]][downloads-url]
+[![Build status][travis-image]][travis-url]
+[![Test coverage][coveralls-image]][coveralls-url]
 
-## Features
+> Flatten an array of nested arrays into a single flat array. Accepts an optional depth.
 
-- **Customer Tracking**: Enter tracking code to view shipment details
-- **Admin Panel**: Create and manage tracking codes
-- **Working Tracking System**: Real data storage and retrieval
+## Installation
 
-## Admin Login
-
-- **URL**: `/admin/`
-- **Email**: `admin@netlightship.com`
-- **Password**: `Vandom20@@`
-
-## Example Tracking Code
-
-- **Code**: `NL202A311XZ43S`
-- Shows: John Smith, iPhone 17 Pro package, USA address
-
-## To Run Locally (Full Functionality)
-
-```bash
-# Install dependencies
-npm install
-
-# Start server
-npm start
-
-# Open http://localhost:3000
+```
+npm install array-flatten --save
 ```
 
-## API Endpoints
+## Usage
 
-- `GET /api/track/:code` - Track a shipment
-- `POST /api/admin/login` - Admin login
-- `GET /api/admin/shipments` - List all shipments (admin)
-- `POST /api/admin/shipments` - Create shipment (admin)
-- `PUT /api/admin/shipments/:id` - Update shipment (admin)
-- `DELETE /api/admin/shipments/:id` - Delete shipment (admin)
+```javascript
+var flatten = require('array-flatten')
 
-## Data Storage
+flatten([1, [2, [3, [4, [5], 6], 7], 8], 9])
+//=> [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
-All data is stored in `data/shipments.json` file.
+flatten([1, [2, [3, [4, [5], 6], 7], 8], 9], 2)
+//=> [1, 2, 3, [4, [5], 6], 7, 8, 9]
+
+(function () {
+  flatten(arguments) //=> [1, 2, 3]
+})(1, [2, 3])
+```
+
+## License
+
+MIT
+
+[npm-image]: https://img.shields.io/npm/v/array-flatten.svg?style=flat
+[npm-url]: https://npmjs.org/package/array-flatten
+[downloads-image]: https://img.shields.io/npm/dm/array-flatten.svg?style=flat
+[downloads-url]: https://npmjs.org/package/array-flatten
+[travis-image]: https://img.shields.io/travis/blakeembrey/array-flatten.svg?style=flat
+[travis-url]: https://travis-ci.org/blakeembrey/array-flatten
+[coveralls-image]: https://img.shields.io/coveralls/blakeembrey/array-flatten.svg?style=flat
+[coveralls-url]: https://coveralls.io/r/blakeembrey/array-flatten?branch=master

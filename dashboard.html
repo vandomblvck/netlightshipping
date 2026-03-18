@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - NETLIGHTSHIPPING</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: #f1f5f9;
+      min-height: 100vh;
+    }
+    
+    .header {
+      background: #0f172a;
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo {
+      font-size: 1.3rem;
+      font-weight: bold;
+    }
+    
+    .logo span {
+      color: #38bdf8;
+    }
+    
+    .logout-btn {
+      background: #ef4444;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    
+    .logout-btn:hover {
+      background: #dc2626;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    
+    .page-title {
+      margin-bottom: 2rem;
+      color: #1e293b;
+    }
+    
+    .btn {
+      padding: 0.75rem 1.5rem;
+      background: #0ea5e9;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 1.5rem;
+    }
+    
+    .btn:hover {
+      background: #0284c7;
+    }
+    
+    .btn-secondary {
+      background: #64748b;
+    }
+    
+    .btn-secondary:hover {
+      background: #475569;
+    }
+    
+    .btn-danger {
+      background: #ef4444;
+    }
+    
+    .btn-danger:hover {
+      background: #dc2626;
+    }
+    
+    .btn-small {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.85rem;
+      margin-bottom: 0;
+    }
+    
+    table {
+      width: 100%;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      border-collapse: collapse;
+    }
+    
+    th {
+      background: #0ea5e9;
+      color: white;
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+    }
+    
+    td {
+      padding: 1rem;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    
+    tr:hover {
+      background: #f8fafc;
+    }
+    
+    .tracking-code {
+      font-family: monospace;
+      font-weight: bold;
+      color: #0ea5e9;
+    }
+    
+    .status {
+      display: inline-block;
+      padding: 0.35rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    
+    .status-pending { background: #fef3c7; color: #92400e; }
+    .status-processing { background: #dbeafe; color: #1e40af; }
+    .status-in-transit { background: #e0e7ff; color: #3730a3; }
+    .status-out-for-delivery { background: #ffedd5; color: #9a3412; }
+    .status-delivered { background: #d1fae5; color: #065f46; }
+    .status-cancelled { background: #fee2e2; color: #991b1b; }
+    
+    .actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+    
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+    
+    .modal.active {
+      display: flex;
+    }
+    
+    .modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      width: 100%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    .modal-header h2 {
+      color: #1e293b;
+    }
+    
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #64748b;
+    }
+    
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #374151;
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      font-family: inherit;
+    }
+    
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #0ea5e9;
+    }
+    
+    .form-group textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+    
+    .form-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    
+    .form-actions .btn {
+      margin-bottom: 0;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      color: #64748b;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      color: #64748b;
+    }
+    
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+      }
+      
+      table {
+        font-size: 0.85rem;
+      }
+      
+      th, td {
+        padding: 0.75rem 0.5rem;
+      }
+      
+      .actions {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="logo">NETLIGHT<span>SHIPPING</span> Admin</div>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </header>
+  
+  <div class="container">
+    <h1 class="page-title">Shipment Management</h1>
+    
+    <button class="btn" onclick="openModal()">+ Create New Shipment</button>
+    
+    <div id="shipmentsTable"></div>
+  </div>
+  
+  <!-- Modal -->
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalTitle">Create Shipment</h2>
+        <button class="close-btn" onclick="closeModal()">&times;</button>
+      </div>
+      
+      <form id="shipmentForm">
+        <input type="hidden" id="shipmentId">
+        
+        <div class="form-group">
+          <label for="customerName">Customer Name *</label>
+          <input type="text" id="customerName" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="packageDetails">Package Details *</label>
+          <textarea id="packageDetails" required placeholder="e.g., iPhone 17 Pro, Chocolate..."></textarea>
+        </div>
+        
+        <div class="form-group">
+          <label for="destinationCountry">Destination Country *</label>
+          <input type="text" id="destinationCountry" required placeholder="e.g., USA">
+        </div>
+        
+        <div class="form-group">
+          <label for="deliveryAddress">Delivery Address *</label>
+          <textarea id="deliveryAddress" required placeholder="Full delivery address"></textarea>
+        </div>
+        
+        <div class="form-group">
+          <label for="status">Status</label>
+          <select id="status">
+            <option value="Pending">Pending</option>
+            <option value="Processing">Processing</option>
+            <option value="In Transit">In Transit</option>
+            <option value="Out for Delivery">Out for Delivery</option>
+            <option value="Delivered">Delivered</option>
+            <option value="Cancelled">Cancelled</option>
+          </select>
+        </div>
+        
+        <div class="form-actions">
+          <button type="submit" class="btn">Save</button>
+          <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <script>
+    const API_URL = window.location.origin + '/api';
+    let editingId = null;
+    
+    // Check auth
+    const token = localStorage.getItem('adminToken');
+    if (!token) {
+      window.location.href = '/admin/';
+    }
+    
+    function logout() {
+      localStorage.removeItem('adminToken');
+      window.location.href = '/admin/';
+    }
+    
+    async function loadShipments() {
+      const tableDiv = document.getElementById('shipmentsTable');
+      tableDiv.innerHTML = '<div class="loading">Loading...</div>';
+      
+      try {
+        const response = await fetch(`${API_URL}/admin/shipments`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        const data = await response.json();
+        
+        if (!data.success) {
+          if (response.status === 401) {
+            logout();
+            return;
+          }
+          throw new Error(data.message);
+        }
+        
+        const shipments = data.shipments;
+        
+        if (shipments.length === 0) {
+          tableDiv.innerHTML = '<div class="empty-state">No shipments found. Create your first one!</div>';
+          return;
+        }
+        
+        let html = `
+          <table>
+            <thead>
+              <tr>
+                <th>Tracking Code</th>
+                <th>Customer</th>
+                <th>Destination</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+        `;
+        
+        shipments.forEach(s => {
+          const statusClass = 'status-' + s.status.toLowerCase().replace(/\s+/g, '-');
+          html += `
+            <tr>
+              <td class="tracking-code">${s.trackingCode}</td>
+              <td>${s.customerName}</td>
+              <td>${s.destinationCountry}</td>
+              <td><span class="status ${statusClass}">${s.status}</span></td>
+              <td>
+                <div class="actions">
+                  <button class="btn btn-small btn-secondary" onclick='editShipment(${JSON.stringify(s).replace(/'/g, "&#39;")})'>Edit</button>
+                  <button class="btn btn-small btn-danger" onclick="deleteShipment('${s.id}', '${s.trackingCode}')">Delete</button>
+                </div>
+              </td>
+            </tr>
+          `;
+        });
+        
+        html += '</tbody></table>';
+        tableDiv.innerHTML = html;
+        
+      } catch (error) {
+        tableDiv.innerHTML = '<div class="empty-state">Error loading shipments. Please refresh.</div>';
+      }
+    }
+    
+    function openModal() {
+      editingId = null;
+      document.getElementById('modalTitle').textContent = 'Create Shipment';
+      document.getElementById('shipmentForm').reset();
+      document.getElementById('shipmentId').value = '';
+      document.getElementById('modal').classList.add('active');
+    }
+    
+    function closeModal() {
+      document.getElementById('modal').classList.remove('active');
+    }
+    
+    function editShipment(shipment) {
+      editingId = shipment.id;
+      document.getElementById('modalTitle').textContent = 'Edit Shipment';
+      document.getElementById('shipmentId').value = shipment.id;
+      document.getElementById('customerName').value = shipment.customerName;
+      document.getElementById('packageDetails').value = shipment.packageDetails;
+      document.getElementById('destinationCountry').value = shipment.destinationCountry;
+      document.getElementById('deliveryAddress').value = shipment.deliveryAddress;
+      document.getElementById('status').value = shipment.status;
+      document.getElementById('modal').classList.add('active');
+    }
+    
+    async function deleteShipment(id, code) {
+      if (!confirm(`Delete shipment ${code}?`)) return;
+      
+      try {
+        const response = await fetch(`${API_URL}/admin/shipments/${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          loadShipments();
+        } else {
+          alert(data.message || 'Failed to delete');
+        }
+      } catch (error) {
+        alert('Error deleting shipment');
+      }
+    }
+    
+    document.getElementById('shipmentForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const payload = {
+        customerName: document.getElementById('customerName').value,
+        packageDetails: document.getElementById('packageDetails').value,
+        destinationCountry: document.getElementById('destinationCountry').value,
+        deliveryAddress: document.getElementById('deliveryAddress').value,
+        status: document.getElementById('status').value
+      };
+      
+      try {
+        let response;
+        
+        if (editingId) {
+          response = await fetch(`${API_URL}/admin/shipments/${editingId}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(payload)
+          });
+        } else {
+          response = await fetch(`${API_URL}/admin/shipments`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(payload)
+          });
+        }
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          closeModal();
+          loadShipments();
+          if (!editingId) {
+            alert(`Shipment created! Tracking code: ${data.shipment.trackingCode}`);
+          }
+        } else {
+          alert(data.message || 'Failed to save');
+        }
+      } catch (error) {
+        alert('Error saving shipment');
+      }
+    });
+    
+    // Close modal on outside click
+    document.getElementById('modal').addEventListener('click', (e) => {
+      if (e.target.id === 'modal') closeModal();
+    });
+    
+    // Load shipments on page load
+    loadShipments();
+  </script>
+</body>
+</html>

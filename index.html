@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login - NETLIGHTSHIPPING</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: #0f172a;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .login-box {
+      background: white;
+      padding: 3rem;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    }
+    
+    .logo {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    .logo h1 {
+      color: #0ea5e9;
+      font-size: 1.8rem;
+    }
+    
+    .logo span {
+      color: #1e293b;
+    }
+    
+    .logo p {
+      color: #64748b;
+      margin-top: 0.5rem;
+    }
+    
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #374151;
+      font-weight: 500;
+    }
+    
+    .form-group input {
+      width: 100%;
+      padding: 0.875rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+    
+    .form-group input:focus {
+      outline: none;
+      border-color: #0ea5e9;
+    }
+    
+    .btn {
+      width: 100%;
+      padding: 1rem;
+      background: #0ea5e9;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    
+    .btn:hover {
+      background: #0284c7;
+    }
+    
+    .error {
+      background: #fee2e2;
+      color: #991b1b;
+      padding: 1rem;
+      border-radius: 6px;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    
+    .back-link {
+      text-align: center;
+      margin-top: 1.5rem;
+    }
+    
+    .back-link a {
+      color: #64748b;
+      text-decoration: none;
+    }
+    
+    .back-link a:hover {
+      color: #0ea5e9;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <div class="logo">
+      <h1>NETLIGHT<span>SHIPPING</span></h1>
+      <p>Admin Portal</p>
+    </div>
+    
+    <div id="error"></div>
+    
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" required placeholder="admin@netlightship.com">
+      </div>
+      
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" required placeholder="Enter password">
+      </div>
+      
+      <button type="submit" class="btn">Sign In</button>
+    </form>
+    
+    <div class="back-link">
+      <a href="/">&larr; Back to Website</a>
+    </div>
+  </div>
+  
+  <script>
+    const API_URL = window.location.origin + '/api';
+    
+    // Check if already logged in
+    const token = localStorage.getItem('adminToken');
+    if (token) {
+      window.location.href = '/admin/dashboard.html';
+    }
+    
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const errorDiv = document.getElementById('error');
+      
+      try {
+        const response = await fetch(`${API_URL}/admin/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          localStorage.setItem('adminToken', data.token);
+          window.location.href = '/admin/dashboard.html';
+        } else {
+          errorDiv.innerHTML = '<div class="error">' + (data.message || 'Invalid credentials') + '</div>';
+        }
+      } catch (error) {
+        errorDiv.innerHTML = '<div class="error">Connection error. Please try again.</div>';
+      }
+    });
+  </script>
+</body>
+</html>
